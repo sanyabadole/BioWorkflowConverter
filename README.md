@@ -1,71 +1,177 @@
-# bio-workflow-generator README
+# BioWorkflow Generator
 
-This is the README for your extension "bio-workflow-generator". After writing up a brief description, we recommend including the following sections.
+A VS Code extension that transforms Jupyter notebooks into production-quality bioinformatics workflows. Automatically converts exploratory analysis into Snakemake/Nextflow pipelines with proper documentation, containerization, and software engineering best practices.
 
-## Features
+## 🎯 Problem
 
-Describe specific features of your extension including screenshots of your extension in action. Image paths are relative to this README file.
+Bioinformatics researchers often develop analyses in Jupyter notebooks, but translating these into reproducible, scalable production pipelines is time-consuming and error-prone. Critical elements like dependency management, containerization, documentation, and proper workflow orchestration are frequently missing.
 
-For example if there is an image subfolder under your extension project workspace:
+## 💡 Solution
 
-\!\[feature X\]\(images/feature-x.png\)
+BioWorkflow Generator bridges the gap between exploratory research and production-ready code by automatically:
 
-> Tip: Many popular extensions utilize animations. This is an excellent way to show off your extension! We recommend short, focused animations that are easy to follow.
+- 📊 Parsing Jupyter notebooks and extracting executable code
+- 🔍 Detecting dependencies and tool requirements
+- 🐍 Generating Snakemake and Nextflow workflow files
+- 🐳 Creating Docker containers with proper environments
+- 📝 Auto-generating documentation and READMEs
+- 🧪 Scaffolding test suites and CI/CD configurations
+- 📦 Preparing GitHub-ready repository structures
 
-## Requirements
+## ✨ Features (Current - Week 1 MVP)
 
-If you have any requirements or dependencies, add a section describing those and how to install and configure them.
+- ✅ Right-click `.ipynb` files to convert them
+- ✅ Automatic Python import detection using AST parsing
+- ✅ Cell-by-cell code extraction
+- ✅ File I/O pattern detection
+- ✅ Generate analysis summaries and reports
+- ✅ 100% local processing (no LLM required)
 
-## Extension Settings
+## 🚀 Roadmap
 
-Include if your extension adds any VS Code settings through the `contributes.configuration` extension point.
+### Week 2-3: Workflow Generation
+- [ ] Generate Snakemake workflow files from notebook structure
+- [ ] Generate Nextflow DSL2 pipelines
+- [ ] Create environment.yml / requirements.txt
+- [ ] Build basic Dockerfiles with detected dependencies
+- [ ] Improve file I/O detection (read/write operations)
 
-For example:
+### Week 4-5: Production Features
+- [ ] Auto-generate test scaffolds
+- [ ] Create GitHub Actions CI/CD workflows
+- [ ] Add error handling and logging to generated pipelines
+- [ ] Extract hardcoded parameters into config files
+- [ ] Support for Singularity containers
 
-This extension contributes the following settings:
+### Future Iterations
+- [ ] One-click GitHub repository creation
+- [ ] Interactive refinement UI
+- [ ] Support for R notebooks
+- [ ] Cloud deployment configurations (AWS, GCP, Azure)
+- [ ] Integration with workflow execution platforms
+- [ ] LLM-powered optimization suggestions (optional)
 
-* `myExtension.enable`: Enable/disable this extension.
-* `myExtension.thing`: Set to `blah` to do something.
+## 📦 Installation (For Development)
 
-## Known Issues
+### Prerequisites
+- Node.js (v18+)
+- Python 3.8+
+- VS Code 1.93.0+
 
-Calling out known issues can help limit users opening duplicate issues against your extension.
+### Setup
 
-## Release Notes
+1. Clone the repository:
+```bash
+git clone https://github.com/sanyabadole/BioWorkflowConverter.git
+cd BioWorkflowConverter/bio-workflow-generator
+```
 
-Users appreciate release notes as you update your extension.
+2. Install Node dependencies:
+```bash
+npm install
+```
 
-### 1.0.0
+3. Set up Python environment:
+```bash
+cd python
+python3 -m venv venv
+source venv/bin/activate  # On Mac/Linux
+# venv\Scripts\activate   # On Windows
+pip install nbformat
+cd ..
+```
 
-Initial release of ...
+4. Compile the extension:
+```bash
+npm run compile
+```
 
-### 1.0.1
+## 🛠️ Development
 
-Fixed issue #.
+### Running the Extension
 
-### 1.1.0
+1. Open the project in VS Code
+2. Press **F5** to launch the Extension Development Host
+3. In the new window, open a folder with `.ipynb` files
+4. Right-click on a notebook → **"Convert to Workflow"**
 
-Added features X, Y, and Z.
+### Project Structure
+
+```
+bio-workflow-generator/
+├── src/
+│   └── extension.ts          # Main extension logic
+├── python/
+│   └── parse_notebook.py     # Notebook parser using nbformat + AST
+├── dist/                     # Compiled output (generated)
+├── package.json              # Extension manifest
+├── tsconfig.json             # TypeScript config
+└── esbuild.js                # Build configuration
+```
+
+### Technologies
+
+- **TypeScript** - Extension framework
+- **Python AST** - Code analysis and import detection
+- **nbformat** - Jupyter notebook parsing
+- **VS Code Extension API** - IDE integration
+
+## 📖 Usage
+
+1. Open VS Code with a bioinformatics project
+2. Navigate to a Jupyter notebook (`.ipynb`)
+3. Right-click the file in Explorer
+4. Select **"Convert to Workflow"**
+5. Check the generated `[notebook_name]_converted/` folder for:
+   - `analysis.json` - Full parsed notebook data
+   - `README.md` - Human-readable summary with dependencies
+
+## 🧪 Example Output
+
+For a notebook with single-cell RNA-seq analysis:
+
+**Generated README.md:**
+```markdown
+# scRNA_analysis - Converted Workflow
+
+## Analysis Summary
+**Total Cells**: 15
+**Code Cells**: 12
+
+## Detected Dependencies
+- scanpy
+- pandas
+- numpy
+- matplotlib.pyplot
+- seaborn
+
+## Input Files Detected
+- data/raw/counts_matrix.h5ad
+- metadata/sample_info.csv
+```
+
+## 🤝 Contributing
+
+This is an early-stage project! Contributions welcome:
+
+- 🐛 Report bugs or request features via GitHub Issues
+- 💻 Submit PRs for new features or improvements
+- 📝 Improve documentation
+- 🧪 Add test cases
+
+## 📄 License
+
+MIT License - see LICENSE file for details
+
+## 👤 Author
+
+**Sanya Badole**
+- GitHub: [@sanyabadole](https://github.com/sanyabadole)
+
+## 🙏 Acknowledgments
+
+Built to address the reproducibility gap in computational biology. Inspired by tools like Snakemake, Nextflow, and the challenges of production bioinformatics workflows.
 
 ---
 
-## Following extension guidelines
-
-Ensure that you've read through the extensions guidelines and follow the best practices for creating your extension.
-
-* [Extension Guidelines](https://code.visualstudio.com/api/references/extension-guidelines)
-
-## Working with Markdown
-
-You can author your README using Visual Studio Code. Here are some useful editor keyboard shortcuts:
-
-* Split the editor (`Cmd+\` on macOS or `Ctrl+\` on Windows and Linux).
-* Toggle preview (`Shift+Cmd+V` on macOS or `Shift+Ctrl+V` on Windows and Linux).
-* Press `Ctrl+Space` (Windows, Linux, macOS) to see a list of Markdown snippets.
-
-## For more information
-
-* [Visual Studio Code's Markdown Support](http://code.visualstudio.com/docs/languages/markdown)
-* [Markdown Syntax Reference](https://help.github.com/articles/markdown-basics/)
-
-**Enjoy!**
+**Status**: Week 1 MVP Complete ✅ | Active Development 🚧
