@@ -40,16 +40,38 @@ def parse_notebook(notebook_path):
                     elif isinstance(node, ast.ImportFrom):
                         module = node.module if node.module else ''
                         for alias in node.names:
-                            result['imports'].append(f"{module}.{alias.name}" if module else alias.name)
+                            full_import = f"{module}.{alias.name}" if module else alias.name
+                            result['imports'].append(full_import)
                     
-                    # Detect file I/O patterns (basic version)
+                    # Detect file I/O patterns (enhanced version)
                     if isinstance(node, ast.Call):
+                        # Handle attribute calls (e.g., pd.read_csv, sc.read_10x_h5)
                         if isinstance(node.func, ast.Attribute):
-                            # Patterns like pd.read_csv(), sc.read_h5ad()
-                            if 'read' in node.func.attr:
-                                # Try to extract filename from first argument
+                            func_name = node.func.attr
+                            
+                            # Detect read operations
+                            if any(pattern in func_name.lower() for pattern in ['read', 'load']):
                                 if node.args and isinstance(node.args[0], ast.Constant):
                                     result['files_read'].append(node.args[0].value)
+                            
+                            # Detect write operations  
+                            if any(pattern in func_name.lower() for pattern in ['write', 'save', 'to_csv', 'to_excel', 'to_parquet', 'to_hdf', 'savefig']):
+                                if node.args and isinstance(node.args[0], ast.Constant):
+                                    result['files_written'].append(node.args[0].value)
+                        
+                        # Handle direct function calls (e.g., open())
+                        elif isinstance(node.func, ast.Name):
+                            if node.func.id == 'open':
+                                if node.args and isinstance(node.args[0], ast.Constant):
+                                    # Check mode argument to determine read/write
+                                    mode = 'r'  # default
+                                    if len(node.args) > 1 and isinstance(node.args[1], ast.Constant):
+                                        mode = node.args[1].value
+                                    
+                                    if 'w' in mode or 'a' in mode:
+                                        result['files_written'].append(node.args[0].value)
+                                    else:
+                                        result['files_read'].append(node.args[0].value)
             
             except SyntaxError:
                 # Skip cells with syntax errors
@@ -65,6 +87,7 @@ def parse_notebook(notebook_path):
     # Remove duplicates
     result['imports'] = list(set(result['imports']))
     result['files_read'] = list(set(result['files_read']))
+    result['files_written'] = list(set(result['files_written']))
     
     return result
 
