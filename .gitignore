@@ -1,5 +1,12 @@
-out
-dist
-node_modules
-.vscode-test/
+
+cat > .gitignore << 'EOF'
+node_modules/
+dist/
+out/
 *.vsix
+.vscode-test/
+python/venv/
+python/__pycache__/
+*.pyc
+.DS_Store
+EOF
