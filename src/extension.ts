@@ -31,7 +31,8 @@ export function activate(context: vscode.ExtensionContext) {
             try {
                 // Call Python parser script
                 const pythonScript = path.join(context.extensionPath, 'python', 'parse_notebook.py');
-                const result = execSync(`python3 "${pythonScript}" "${notebookPath}"`, {
+                const pythonExe = '/Users/sanyabadole/Desktop/BioWorkflowConverter/bio-workflow-generator/python/venv/bin/python';
+                const result = execSync(`${pythonExe} "${pythonScript}" "${notebookPath}"`, {
                     encoding: 'utf-8'
                 });
                 
